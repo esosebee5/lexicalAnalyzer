@@ -1,6 +1,9 @@
-import com.sun.org.apache.xpath.internal.operations.Number;
-
 import java.io.*;
+
+/**
+ * shifted into java by esosebee5
+ * for my programming languages class
+ */
 
 public class analyzer {
     static int charClass;
