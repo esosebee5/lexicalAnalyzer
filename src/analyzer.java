@@ -6,13 +6,13 @@ import java.io.*;
  */
 
 public class analyzer {
-    static int charClass;
-    static char[] lexeme = new char[100];
-    static char nextChar;
-    static int lexLen;
+    private static int charClass;
+    private static char[] lexeme;
+    private static char nextChar;
+    private static int lexLen;
     //static int token;
     private static int nextToken;
-    private static int index = 0;
+    private static int index;
 
     private static final int LETTER = 0;
     private static final int DIGIT = 1;
@@ -30,33 +30,46 @@ public class analyzer {
 
     // something for files
     private static String fileData = "";
+    private static final String headline = "Eric Sosebee, CSCI4200-DA, Fall 2018, Lexical Analyzer";
+    private static final String border
+            = "********************************************************************************";
 
     public static void main(String[] args) {
+        System.out.println(headline);
         String fileName = "lex.txt";
 
         try {
             FileReader fileReader = new FileReader(fileName);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-            //String fileData = "";
-            String line = "";
+            String line = bufferedReader.readLine();
             while (line != null) {
-                fileData = fileData + line;
+                fileData = line;
+
+                if (!fileData.isEmpty()) {
+                    System.out.println(border);
+                    System.out.println();
+                    fileData = fileData.replace(" ", "");
+                    System.out.println("Input: " + fileData);
+
+//                    char[] arr = fileData.toCharArray();
+//                    String data = stringifyArray(arr).replace(" ", "");
+//                    System.out.println(data);
+
+                    index = 0;
+
+                    getChar();
+                    do {
+                        lex();
+                    } while ((nextToken != EOF));
+                }
+
                 line = bufferedReader.readLine();
             }
-            String[] arr = fileData.split("");
 
-            //for debugging
-            System.out.println(fileData);
-            for (String a : arr) {
-                //System.out.println(a);
-            }
-
-            getChar();
-            do {
-                lex();
-            } while (nextToken != EOF);
-
+            System.out.printf("Next token is: %d, \tNext lexeme is %s\n",
+                    nextToken, stringifyArray(lexeme));
+            System.out.println(border);
 
         } catch (Exception e) {
             System.out.println(e);
@@ -64,7 +77,6 @@ public class analyzer {
 
     }
 
-    /*****************************************************/
     /**
      * addChar - a function to add nextChar to lexeme
      */
@@ -77,7 +89,6 @@ public class analyzer {
         }
     }
 
-    /*****************************************************/
     /**
      * getChar - a function to get the next character of
      *  input and determine its character class
@@ -86,8 +97,6 @@ public class analyzer {
         try {
             nextChar = getNextCharFrom(fileData);
         } catch (StringIndexOutOfBoundsException e) {
-//            System.out.println(e);
-//            System.out.println("This is the end of the file . . .");
             charClass = EOF;
             return;
         }
@@ -104,7 +113,6 @@ public class analyzer {
         return nextChar;
     }
 
-    /*****************************************************/
     /**
      * getNonBlank - a function to call getChar until it
      * returns a non-whitespace character
@@ -115,7 +123,6 @@ public class analyzer {
         }
     }
 
-    /*****************************************************/
     /**
      *  lex - a simple lexical analyzer for arithmetic
      *  expressions
@@ -163,13 +170,14 @@ public class analyzer {
                 break;
         } /* End of switch */
 
-        System.out.printf("Next token is: %d, Next lexeme is %s\n",
-                nextToken, stringifyArray(lexeme));
+        if(nextToken != EOF) {
+            System.out.printf("Next token is: %d, %20s %s\n", nextToken, "Next lexeme is ",
+                    stringifyArray(lexeme));
+        }
 
         return nextToken;
     }   /* End of function lex */
 
-    /*****************************************************/
     /**
      * lookup - a function to lookup operators and parentheses
      * and return the token

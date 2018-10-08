@@ -1,4 +1,3 @@
-myBirthdate - (
-yearsOld + 100
-)
-= 1
+myBirthdate - (yearsOld + 100  )= 1
+k
+8=aw +i
